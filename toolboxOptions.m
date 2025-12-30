@@ -61,6 +61,9 @@ function opts = toolboxOptions
 
     opts.MaximumMatlabRelease = "";
 
+    % Toolbox icon
+    opts.ToolboxImageFile = fullfile("toolbox", "toml_icon.png");
+
     % Supported platforms
 
     platforms.Win64        = true;
