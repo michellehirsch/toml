@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Getting Started with TOML Toolbox</title>
+    <style>
+        body { font-family: Helvetica, Arial, sans-serif; margin: 20px; line-height: 1.6; }
+        h1 { color: #0076A8; border-bottom: 2px solid #0076A8; padding-bottom: 10px; }
+        h2 { color: #0076A8; margin-top: 30px; }
+        h3 { color: #333; }
+        code { background-color: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-family: Consolas, Monaco, monospace; }
+        pre { background-color: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        pre code { background-color: transparent; padding: 0; }
+        .note { background-color: #E7F3F8; border-left: 4px solid #0076A8; padding: 10px 15px; margin: 20px 0; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #0076A8; color: white; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+    </style>
+</head>
+<body>
+    <h1>Getting Started with TOML Toolbox</h1>
+
+    <p>The TOML Toolbox provides functions for reading and writing TOML (Tom's Obvious Minimal Language) configuration files in MATLAB. This toolbox makes it easy to work with TOML files using native MATLAB structs.</p>
+
+    <h2>What is TOML?</h2>
+    <p>TOML is a minimal configuration file format that's easy to read due to obvious semantics. TOML is designed to map unambiguously to a hash table and is commonly used for configuration files in many programming languages and tools.</p>
+
+    <h2>Installation</h2>
+    <p>The TOML Toolbox is automatically added to your MATLAB path when you install it. You can verify the installation by typing:</p>
+    <pre><code>which readtoml</code></pre>
+
+    <h2>Quick Start</h2>
+
+    <h3>Reading TOML Files</h3>
+    <p>Use <code>readtoml</code> to read a TOML file into a MATLAB struct:</p>
+    <pre><code>% Read a TOML configuration file
+config = readtoml("config.toml");
+
+% Access nested values using struct syntax
+serverAddress = config.database.server;
+port = config.database.port;</code></pre>
+
+    <h3>Writing TOML Files</h3>
+    <p>Use <code>writetoml</code> to write a MATLAB struct to a TOML file:</p>
+    <pre><code>% Create configuration as a struct
+config.app_name = "My Application";
+config.version = 2.1;
+config.database.server = "localhost";
+config.database.port = 5432;
+config.features = ["auth", "logging", "metrics"];
+
+% Write to TOML file
+writetoml("config.toml", config);</code></pre>
+
+    <h2>Supported Data Types</h2>
+    <table>
+        <tr>
+            <th>TOML Type</th>
+            <th>MATLAB Type</th>
+            <th>Example</th>
+        </tr>
+        <tr>
+            <td>String</td>
+            <td>string</td>
+            <td><code>"hello world"</code></td>
+        </tr>
+        <tr>
+            <td>Integer</td>
+            <td>double</td>
+            <td><code>42</code>, <code>0xFF</code>, <code>0o755</code></td>
+        </tr>
+        <tr>
+            <td>Float</td>
+            <td>double</td>
+            <td><code>3.14</code>, <code>1e-5</code></td>
+        </tr>
+        <tr>
+            <td>Boolean</td>
+            <td>logical</td>
+            <td><code>true</code>, <code>false</code></td>
+        </tr>
+        <tr>
+            <td>Array</td>
+            <td>Array</td>
+            <td><code>[1, 2, 3]</code>, <code>["a", "b"]</code></td>
+        </tr>
+        <tr>
+            <td>Table</td>
+            <td>struct</td>
+            <td><code>[database]</code> → <code>config.database</code></td>
+        </tr>
+        <tr>
+            <td>Inline Table</td>
+            <td>struct</td>
+            <td><code>{x=1, y=2}</code></td>
+        </tr>
+        <tr>
+            <td>Datetime</td>
+            <td>datetime</td>
+            <td><code>2024-01-15T10:30:00Z</code></td>
+        </tr>
+    </table>
+
+    <h2>Key Features</h2>
+    <ul>
+        <li><strong>Round-trip support:</strong> Preserve key ordering when reading and writing files</li>
+        <li><strong>Nested tables:</strong> Support for deeply nested configuration structures</li>
+        <li><strong>Type safety:</strong> Automatic conversion between TOML and MATLAB types</li>
+        <li><strong>File protection:</strong> Prevents accidental overwrites unless explicitly allowed</li>
+    </ul>
+
+    <div class="note">
+        <strong>Note:</strong> This toolbox requires MATLAB R2022b or later due to the use of dictionary support for metadata tracking.
+    </div>
+
+    <h2>Next Steps</h2>
+    <ul>
+        <li>See <a href="examples.html">Examples</a> for more usage examples</li>
+        <li>Read the <a href="readtoml.html">readtoml</a> and <a href="writetoml.html">writetoml</a> function references</li>
+        <li>Explore the demo script: <code>open demo_examples.m</code></li>
+    </ul>
+</body>
+</html>

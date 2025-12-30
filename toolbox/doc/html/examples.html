@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOML Toolbox Examples</title>
+    <style>
+        body { font-family: Helvetica, Arial, sans-serif; margin: 20px; line-height: 1.6; }
+        h1 { color: #0076A8; border-bottom: 2px solid #0076A8; padding-bottom: 10px; }
+        h2 { color: #0076A8; margin-top: 30px; }
+        h3 { color: #333; }
+        code { background-color: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-family: Consolas, Monaco, monospace; }
+        pre { background-color: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        pre code { background-color: transparent; padding: 0; }
+        .example { margin: 30px 0; padding: 20px; background-color: #f9f9f9; border-left: 4px solid #0076A8; }
+    </style>
+</head>
+<body>
+    <h1>TOML Toolbox Examples</h1>
+
+    <div class="example">
+        <h2>Example 1: Reading a Simple Configuration File</h2>
+        <p>Read a TOML file containing basic configuration:</p>
+        <pre><code>% config.toml contains:
+% title = "My Application"
+% version = 1
+% debug = false
+%
+% [database]
+% server = "192.168.1.1"
+% port = 5432
+
+% Read the file
+config = readtoml("config.toml");
+
+% Access values
+disp(config.title)              % "My Application"
+disp(config.database.server)    % "192.168.1.1"
+disp(config.database.port)      % 5432</code></pre>
+    </div>
+
+    <div class="example">
+        <h2>Example 2: Working with Arrays</h2>
+        <p>TOML supports arrays of homogeneous types:</p>
+        <pre><code>% Create data with arrays
+data.integers = [1, 2, 3, 4, 5];
+data.colors = ["red", "green", "blue"];
+data.ports = [8080, 8081, 8082];
+
+% Write to file
+writetoml("arrays.toml", data);
+
+% Read back
+readData = readtoml("arrays.toml");
+disp(readData.colors)  % ["red", "green", "blue"]</code></pre>
+    </div>
+
+    <div class="example">
+        <h2>Example 3: Nested Configuration Structures</h2>
+        <p>Work with deeply nested tables:</p>
+        <pre><code>% Create nested configuration
+config.server.database.host = "localhost";
+config.server.database.port = 3306;
+config.server.database.name = "mydb";
+
+config.application.settings.timeout = 30;
+config.application.settings.retries = 3;
+
+% Write to file
+writetoml("nested.toml", config);
+
+% Read and access nested values
+readConfig = readtoml("nested.toml");
+dbHost = readConfig.server.database.host;</code></pre>
+    </div>
+
+    <div class="example">
+        <h2>Example 4: Round-Trip with Key Ordering</h2>
+        <p>Preserve the original key ordering when modifying files:</p>
+        <pre><code>% Read file with metadata
+[data, metadata] = readtoml("original.toml");
+
+% Modify some values
+data.database.port = 3306;
+data.version = 2.0;
+
+% Write back preserving original key order
+writetoml("modified.toml", data, "Metadata", metadata, "OverWrite", true);
+
+% The output file will maintain the same key order as the input</code></pre>
+    </div>
+
+    <div class="example">
+        <h2>Example 5: Handling Datetime Values</h2>
+        <p>TOML datetime values are converted to MATLAB datetime objects:</p>
+        <pre><code>% Read file with datetime (default behavior)
+config = readtoml("timestamps.toml");
+created = config.created;  % datetime object
+disp(created)
+
+% Or read as strings if preferred
+config = readtoml("timestamps.toml", "DatetimeType", "string");
+created = config.created;  % string
+disp(created)</code></pre>
+    </div>
+
+    <div class="example">
+        <h2>Example 6: Overwrite Protection</h2>
+        <p>By default, writetoml prevents accidental file overwrites:</p>
+        <pre><code>% First write succeeds
+data.key = "value1";
+writetoml("test.toml", data);
+
+% Second write to same file fails
+data.key = "value2";
+try
+    writetoml("test.toml", data);  % Error!
+catch ME
+    disp(ME.message)  % File exists error
+end
+
+% Explicitly allow overwrite
+writetoml("test.toml", data, "OverWrite", true);  % Succeeds</code></pre>
+    </div>
+
+    <div class="example">
+        <h2>Example 7: Complete Application Configuration</h2>
+        <p>A real-world example combining multiple features:</p>
+        <pre><code>% Create application configuration
+config.app_name = "Data Processor";
+config.version = "1.2.0";
+config.author = "Research Team";
+
+% Database settings
+config.database.host = "db.example.com";
+config.database.port = 5432;
+config.database.name = "analytics";
+config.database.pool_size = 10;
+
+% Processing settings
+config.processing.threads = 4;
+config.processing.batch_size = 1000;
+config.processing.timeout = 3600;
+
+% Feature flags
+config.features.enable_caching = true;
+config.features.enable_logging = true;
+config.features.debug_mode = false;
+
+% Supported formats
+config.formats = ["csv", "json", "parquet"];
+
+% Write configuration
+writetoml("app_config.toml", config);
+
+% Later, read and use
+appConfig = readtoml("app_config.toml");
+if appConfig.features.enable_logging
+    diary('app.log');
+end</code></pre>
+    </div>
+
+    <h2>See Also</h2>
+    <ul>
+        <li><a href="readtoml.html">readtoml</a> - Read TOML files</li>
+        <li><a href="writetoml.html">writetoml</a> - Write TOML files</li>
+        <li><a href="GettingStarted.html">Getting Started</a> - Introduction to the toolbox</li>
+    </ul>
+</body>
+</html>

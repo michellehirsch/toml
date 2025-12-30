@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<toc version="2.0">
+    <tocitem target="html/GettingStarted.html">TOML Toolbox
+        <tocitem target="html/GettingStarted.html">Getting Started</tocitem>
+        <tocitem target="html/examples.html">Examples</tocitem>
+        <tocitem target="html/functions.html">Functions
+            <tocitem target="html/readtoml.html">readtoml</tocitem>
+            <tocitem target="html/writetoml.html">writetoml</tocitem>
+        </tocitem>
+    </tocitem>
+</toc>

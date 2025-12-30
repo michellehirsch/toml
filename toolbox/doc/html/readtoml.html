@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>readtoml - TOML Toolbox</title>
+    <style>
+        body { font-family: Helvetica, Arial, sans-serif; margin: 20px; line-height: 1.6; }
+        h1 { color: #0076A8; border-bottom: 2px solid #0076A8; padding-bottom: 10px; }
+        h2 { color: #0076A8; margin-top: 30px; }
+        h3 { color: #333; }
+        code { background-color: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-family: Consolas, Monaco, monospace; }
+        pre { background-color: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        pre code { background-color: transparent; padding: 0; }
+        .syntax { background-color: #E7F3F8; padding: 15px; border-radius: 5px; margin: 20px 0; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; vertical-align: top; }
+        th { background-color: #0076A8; color: white; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+    </style>
+</head>
+<body>
+    <h1>readtoml</h1>
+    <p>Read TOML configuration file into MATLAB struct</p>
+
+    <h2>Syntax</h2>
+    <div class="syntax">
+        <code>data = readtoml(filename)</code><br>
+        <code>[data, metadata] = readtoml(filename)</code><br>
+        <code>data = readtoml(filename, Name=Value)</code>
+    </div>
+
+    <h2>Description</h2>
+    <p><code>data = readtoml(filename)</code> reads the TOML file specified by <code>filename</code> and returns the contents as a MATLAB struct.</p>
+
+    <p><code>[data, metadata] = readtoml(filename)</code> also returns metadata containing key ordering information for round-trip support.</p>
+
+    <p><code>data = readtoml(filename, Name=Value)</code> specifies additional options using name-value arguments.</p>
+
+    <h2>Input Arguments</h2>
+    <table>
+        <tr>
+            <th style="width: 150px;">Name</th>
+            <th style="width: 120px;">Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td><code>filename</code></td>
+            <td>string</td>
+            <td>Path to the TOML file to read. Can be an absolute or relative path.</td>
+        </tr>
+    </table>
+
+    <h3>Name-Value Arguments</h3>
+    <table>
+        <tr>
+            <th style="width: 150px;">Name</th>
+            <th style="width: 120px;">Type</th>
+            <th style="width: 100px;">Default</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td><code>DatetimeType</code></td>
+            <td>string</td>
+            <td><code>"datetime"</code></td>
+            <td>How to handle datetime values:<br>
+                • <code>"datetime"</code> - Convert to MATLAB datetime objects<br>
+                • <code>"string"</code> - Keep as string values</td>
+        </tr>
+    </table>
+
+    <h2>Output Arguments</h2>
+    <table>
+        <tr>
+            <th style="width: 150px;">Name</th>
+            <th style="width: 120px;">Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td><code>data</code></td>
+            <td>struct</td>
+            <td>Parsed TOML data as a MATLAB struct with fields corresponding to TOML keys.</td>
+        </tr>
+        <tr>
+            <td><code>metadata</code></td>
+            <td>dictionary</td>
+            <td>Dictionary tracking key insertion order at each nesting level. Used with <code>writetoml</code> to preserve key order during round-trip operations.</td>
+        </tr>
+    </table>
+
+    <h2>Examples</h2>
+
+    <h3>Read a Simple TOML File</h3>
+    <pre><code>% Read configuration file
+config = readtoml("config.toml");
+
+% Access values
+title = config.title;
+port = config.database.port;</code></pre>
+
+    <h3>Read with Metadata for Round-Trip</h3>
+    <pre><code>% Read file with metadata
+[data, metadata] = readtoml("input.toml");
+
+% Check key ordering
+rootKeys = metadata{""}{1};  % Keys at root level
+disp(rootKeys);
+
+% Modify and write back preserving order
+data.database.port = 3306;
+writetoml("output.toml", data, "Metadata", metadata);</code></pre>
+
+    <h3>Read Datetime as Strings</h3>
+    <pre><code>% Read with datetime values as strings
+config = readtoml("timestamps.toml", "DatetimeType", "string");
+
+% created will be a string instead of datetime object
+created = config.created;</code></pre>
+
+    <h2>Type Conversions</h2>
+    <table>
+        <tr>
+            <th>TOML Type</th>
+            <th>MATLAB Type</th>
+            <th>Notes</th>
+        </tr>
+        <tr>
+            <td>String</td>
+            <td>string</td>
+            <td>Both basic and literal strings supported</td>
+        </tr>
+        <tr>
+            <td>Integer</td>
+            <td>double</td>
+            <td>Supports decimal, hex (0x), octal (0o), binary (0b)</td>
+        </tr>
+        <tr>
+            <td>Float</td>
+            <td>double</td>
+            <td>Standard and scientific notation</td>
+        </tr>
+        <tr>
+            <td>Boolean</td>
+            <td>logical</td>
+            <td><code>true</code> and <code>false</code></td>
+        </tr>
+        <tr>
+            <td>Array</td>
+            <td>Array</td>
+            <td>Must be homogeneous (all same type)</td>
+        </tr>
+        <tr>
+            <td>Table</td>
+            <td>struct</td>
+            <td>Nested tables become nested structs</td>
+        </tr>
+        <tr>
+            <td>Inline Table</td>
+            <td>struct</td>
+            <td><code>{x=1, y=2}</code> format</td>
+        </tr>
+        <tr>
+            <td>Datetime</td>
+            <td>datetime or string</td>
+            <td>Depends on DatetimeType option</td>
+        </tr>
+    </table>
+
+    <h2>See Also</h2>
+    <p><a href="writetoml.html">writetoml</a>, <a href="examples.html">Examples</a></p>
+</body>
+</html>
