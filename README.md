@@ -220,7 +220,7 @@ See `CLAUDE.md` for detailed architectural documentation.
 
 ## License
 
-[Specify your license here]
+This project is licensed under the BSD 3-Clause License - see the [LICENSE](LICENSE) file for details.
 
 ## Contributing
 
